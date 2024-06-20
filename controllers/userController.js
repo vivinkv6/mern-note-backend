@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+require("dotenv").config();
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -11,13 +11,12 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User Already Exists" });
     }
     const user = new User({ name, email, password });
+
     await user.save();
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res.status(201).json({ token, user: { id: user._id, name, email } });
+    const token = jwt.sign(user.id, process.env.JWT_SECRET,{expiresIn:'2h'});
+    res.status(201).json({ token, user: { id: user.id, name, email } });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error});
   }
 };
 
@@ -34,12 +33,10 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res.status(200).json({ token, user: { id: user._id, name, email } });
+    const token = jwt.sign(user.id, process.env.JWT_SECRET,{expiresIn:'2h'});
+    res.status(200).json({ token, user: { id: user.id, name:user?.name, email } });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
