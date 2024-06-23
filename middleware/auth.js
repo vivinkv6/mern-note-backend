@@ -4,9 +4,8 @@ require("dotenv").config();
 const auth = async (req, res, next) => {
   try {
     if (
-      req?.header(
-        "Authorization" && req?.header("Authorization").split(" ").length > 1
-      )
+      req?.header("Authorization") &&
+      req?.header("Authorization")?.split(" ")?.length > 1
     ) {
       const token = req.header("Authorization").split(" ")[1];
       if (!token) {

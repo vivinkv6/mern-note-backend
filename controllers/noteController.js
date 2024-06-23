@@ -25,6 +25,16 @@ const getNotes = async (req, res) => {
   }
 };
 
+const getNoteDetails = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const note = await Note.findById(id);
+    res.status(200).json(note);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 const updateNote = async (req, res) => {
   const { id } = req.params;
   const { title, description, image } = req.body;
@@ -65,5 +75,4 @@ const deleteNote = async (req, res) => {
   }
 };
 
-
-module.exports={createNote,getNotes,updateNote,deleteNote}
+module.exports = { createNote, getNotes, updateNote, deleteNote,getNoteDetails };

@@ -6,7 +6,7 @@ const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email });
     if (existingUser) {
       return res.status(400).json({ message: "User Already Exists" });
     }
@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
     const token = jwt.sign(user.id, process.env.JWT_SECRET);
     res.status(201).json({ token, user: { id: user.id, name, email } });
   } catch (error) {
-    res.status(500).json({ message: error});
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -25,16 +25,18 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Wrong Email" });
+      return res.status(400).json({ email: "Please Enter Valid Email" });
     }
     //check if the password is correct or not
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Wrong Password" });
+      return res.status(400).json({ password: "Wrong Password" });
     }
 
     const token = jwt.sign(user.id, process.env.JWT_SECRET);
-    res.status(200).json({ token, user: { id: user.id, name:user?.name, email } });
+    res
+      .status(200)
+      .json({ token, user: { id: user.id, name: user?.name, email } });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
