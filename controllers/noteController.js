@@ -12,7 +12,7 @@ const createNote = async (req, res) => {
     await note.save();
     res.status(201).json(note);
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -68,10 +68,10 @@ const deleteNote = async (req, res) => {
       return res.status(401).json({ message: "UnAuthorized" });
     }
 
-    await note.remove();
+   await Note.deleteOne({ _id: id });
     res.status(200).json({ message: "Note Removed" });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
